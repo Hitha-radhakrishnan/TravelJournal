@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+        .Container{
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .MainContainer{
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height:600px;
+            background-color: black;
+            color: white;
+        }
+        .BackGround{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        .BackGround h1{
+            border: solid rgb(255, 255, 255);
+            font-size: 4rem;
+            padding: 40px;
+        }
+        .navbar{
+            display: flex;
+            justify-content: right;
+            align-items: center;
+            padding:20px;
+        }
+
+        .MainForm {
+            display: none;
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center; 
+            align-items: center; 
+            color: #ffffff;
+            z-index: 1000; 
+        }
+
+        .FormContent {
+            background-color:#151515;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .FormContent form{
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+        .FormContent form input{
+            height: 40px;
+            width: 250px;
+            background-color: #000000;
+            border-color: #ffffff;
+            color: #ffffff;
+        }
+        .FormContent button{
+            height: 40px;
+            width: 100px;
+            background-color:#8d15e3;
+            border-radius: 5px;
+            border: transparent;
+            color: white;
+        }
+        .FormContent button:hover{
+            background-color: #441ab7;
+        }
+        .EditTravel{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="Container">
+        <div class="MainContainer">
+            <div class="navbar">
+                <button onclick="OpenTravelSubmit()">Add Journal</button>
+                <div class="MainForm" id="MainForm">
+                    <span class="CloseBtnn">&times;</span>
+                    <div class="FormContent">
+                        <form action="">
+                            <h2>Add a New Trip</h2>
+                            <input type="text" placeholder="Enter Destination" id="Destination">
+                            <input type="date" placeholder="Date" id="Date">
+                            <input type="text" placeholder="Write about your trip.." id="Highlights">
+                            <input type="url" placeholder="Enter your image URL" id="Img">
+                            <button onclick="createTravel()">Add Trip</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="BackGround">
+                <h1>TRAVEL THE WORLD</h1>               
+            </div>
+        </div>
+        <div id="TravelItems">
+
+        </div>
+        <div id="EditTravel" class="EditTravel">
+            <div class="Edit-container">
+                <span class="close-btn">&times;</span>
+                <form id="edit-form" onsubmit="editTravel(event)">
+                    <h2>Edit Your Journal</h2>
+                    <div class="form-group">
+                        <input type="text" id="edit-destination" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="edit-date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <input id="edit-highlights" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="url" id="edit-img" class="form-control" required>
+                    </div>
+                    <div class="button">
+                        <button type="submit" class="btn"> Update Journal</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        let currentEditId=null;
+        async function OpenTravelSubmit() {
+            document.getElementById('MainForm').style.display="Flex";
+        }
+        
+        async function createTravel(){
+            const Destination= document.getElementById('Destination').value;
+            const Date=document.getElementById('Date').value;
+            const Highlights=document.getElementById('Highlights').value;
+            const ImgUrl=document.getElementById('Img').value;
+       
+
+            const response=await fetch('http://localhost:8000/api/travel',{
+            method: 'POST',
+            headers:{
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify({Destination,Date,Highlights,ImgUrl})
+             });
+
+            if(response.ok){
+                document.getElementById('Destination').value='';
+                document.getElementById('Date').value='';
+                document.getElementById('Highlights').value='';
+                document.getElementById('Img').value='';
+                FetchTravel();
+             } 
+            else{
+                console.error('Failed to create journal:',response.statusText);
+            }
+        }
+
+    async function FetchTravel(){
+    const response=await fetch('http://localhost:8000/api/travel');
+    const travels=await response.json();
+    const container=document.getElementById('TravelItems');
+    container.innerHTML='';
+
+    travels.forEach(travel=>{
+        const TravelDiv=document.createElement('div');
+        TravelDiv.className='TravelDetails';
+        TravelDiv.innerHTML=`
+        <h2>${travel.Destination}</h2>
+        <h2>Date: ${travel.Date}</h2>
+        <h2>Notes: ${travel.Highlights}
+        <div class=TravelImg>
+        <img src="${travel.ImgUrl}" alt=""><div>
+            <div class="button2">
+            <button class="edit-btn"onclick="openEditTravel('${travel._id}','${travel.Destination}','${travel.Date}','${travel.Highlights}','${travel.ImgUrl}')">Edit</button> 
+            <button class="delete-btn" onclick="deleteTravel('${travel._id}')">Delete</button>
+            </div> `;
+        container.appendChild(TravelDiv);
+    });
+}
+function openEditTravel(id,Destination,Date,Highlights,ImgUrl){
+    currentEditId=id;
+    document.getElementById('edit-destination').value=Destination;
+    document.getElementById('edit-date').value=Date;
+    document.getElementById('edit-highlights').value=Highlights;
+    document.getElementById('edit-img').value=ImgUrl;
+    document.getElementById('EditTravel').style.display='Flex';
+}
+
+
+async function editTravel(event){
+    event.preventDefault();
+    const destination=document.getElementById('edit-destination').value;
+    const date=document.getElementById('edit-date').value;
+    const highlights=document.getElementById('edit-highlights').value;
+    const imgUrl=document.getElementById('edit-img').value;
+
+    if(currentEditId){
+        const response= await fetch(`http://localhost:8000/api/travel/${currentEditId}`,{
+            method:'PUT',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify({ Destination: destination, Date: date, Highlights: highlights, ImgUrl: imgUrl })
+        });
+        if(response.ok){
+            FetchTravel();
+            // closeTravel();
+        } else{
+            console.error('Failed to update Journal:',response.statusText);
+        }
+    }
+}
+
+async function deleteTravel(id) {
+      const response = await fetch(`http://localhost:8000/api/travel/${id}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        FetchTravel();
+        closeTravel();
+      } else {
+        console.error('Failed to delete journal:', response.statusText);
+}
+}
+function closeTravel() {
+    document.getElementById('EditTravel').style.display = 'none';
+}
+window.onload = FetchTravel;
+
+
+    </script>
+</body>
+</html>
+
