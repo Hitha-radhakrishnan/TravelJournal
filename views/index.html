@@ -42,6 +42,18 @@
             align-items: center;
             padding:20px;
         }
+        .navbar button{
+            height: 40px;
+            width: 120px;
+            background-color: #000000;
+            color: #ffffff;
+            border:solid #177bcd;
+            border-radius: 5px;
+        }
+        .navbar button:hover{
+            background-color: #177bcd;
+            color: #ffffff;
+        }
 
         .MainForm {
             display: none;
@@ -53,15 +65,15 @@
             background-color: rgba(0, 0, 0, 0.7);
             justify-content: center; 
             align-items: center; 
-            color: #ffffff;
+            color:#177bcd;
             z-index: 1000; 
         }
 
         .FormContent {
-            background-color:#151515;
+            background-color:#ffffff;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+            position: relative;
         }
 
         .FormContent form{
@@ -74,24 +86,154 @@
         .FormContent form input{
             height: 40px;
             width: 250px;
-            background-color: #000000;
-            border-color: #ffffff;
-            color: #ffffff;
+            background-color: #ffffff;
+            border-color:#177bcd;
+            color: #177bcd;
         }
         .FormContent button{
             height: 40px;
             width: 100px;
-            background-color:#8d15e3;
+            background-color:#177bcd;
             border-radius: 5px;
             border: transparent;
             color: white;
         }
         .FormContent button:hover{
-            background-color: #441ab7;
+            background-color:#5a96c7;
         }
         .EditTravel{
             display: none;
         }
+        .MyHeading{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 30px;
+        }
+        .TravelItems{
+            display: flex;
+            width:100%;
+            padding-top: 30px;
+            flex-direction: column;
+            gap: 50px;
+        }
+        .TravelDetails{
+            display:grid;
+            grid-template-columns:2fr 3fr 0.5fr;
+            width: 100%;
+            justify-content: space-between;
+        }
+        .TravelImg img{
+            height: 400px;
+            width:100%;
+            border-radius: 5px;
+        }
+        .Details{
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            font-weight:bold;
+            padding-left: 10px;
+            padding-right: 10px;
+            text-align: justify;
+            font-size:small;
+        }
+        .Details p{
+            font-weight: lighter;
+        }
+        .Details .AllButton{
+            display: flex;
+            gap:10px;
+            flex-direction: row;
+            margin-top: 10px;
+            justify-content: flex-start;
+        }
+        .AllButton{
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            justify-content: center;
+            align-items: center;
+        }
+        .AllButton button{
+            height: 30px;
+            width: 80px;
+            background-color: #177bcd;
+            color: #ffffff;
+            border-radius: 5px;
+            border: transparent;
+        }
+        .AllButton button:hover{
+            background-color: #ffffff;
+            border: solid #177bcd;
+            color: #177bcd;
+        }
+
+
+         #EditTravel {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.7);
+        justify-content: center;
+        align-items: center;
+        z-index: 1001;
+    }
+
+    .Edit-container {
+        background-color: #ffffff;
+        padding: 20px;
+        position: relative;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+        width: 400px;
+        color:#177bcd;
+    }
+
+    .Edit-container h2 {
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+    }
+
+    .Edit-container input {
+        height: 40px;
+        width: 390px;
+        background-color: #ffffff;
+        border:  solid #177bcd;
+        margin-bottom: 10px;
+        color: #000000;
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+    .Edit-container button {
+        background-color:#177bcd;
+        padding: 10px;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .Edit-container button:hover {
+        background-color:#5a96c7;
+    }
+    .close-btn, .CloseBtnn {
+        color:#000000;
+        font-size: 2rem;
+        position: absolute;
+        top:10px;
+        right:10px;
+        cursor: pointer;
+    }
+
+    .close-btn:hover, .CloseBtnn:hover {
+        color: #dd3e3e;
+    }  
     </style>
 </head>
 <body>
@@ -100,8 +242,10 @@
             <div class="navbar">
                 <button onclick="OpenTravelSubmit()">Add Journal</button>
                 <div class="MainForm" id="MainForm">
-                    <span class="CloseBtnn">&times;</span>
+
                     <div class="FormContent">
+                    <span class="CloseBtnn">&times;</span>
+                   
                         <form action="">
                             <h2>Add a New Trip</h2>
                             <input type="text" placeholder="Enter Destination" id="Destination">
@@ -117,7 +261,10 @@
                 <h1>TRAVEL THE WORLD</h1>               
             </div>
         </div>
-        <div id="TravelItems">
+        <div class="MyHeading">
+            <h1>JOURNALS</h1>
+        </div>
+        <div id="TravelItems" class="TravelItems">
 
         </div>
         <div id="EditTravel" class="EditTravel">
@@ -186,15 +333,18 @@
         const TravelDiv=document.createElement('div');
         TravelDiv.className='TravelDetails';
         TravelDiv.innerHTML=`
+        <div class="Details">
         <h2>${travel.Destination}</h2>
         <h2>Date: ${travel.Date}</h2>
-        <h2>Notes: ${travel.Highlights}
-        <div class=TravelImg>
-        <img src="${travel.ImgUrl}" alt=""><div>
-            <div class="button2">
+        <h2>Notes: <p>${travel.Highlights}</p></h2>
+         <div class="AllButton">
             <button class="edit-btn"onclick="openEditTravel('${travel._id}','${travel.Destination}','${travel.Date}','${travel.Highlights}','${travel.ImgUrl}')">Edit</button> 
             <button class="delete-btn" onclick="deleteTravel('${travel._id}')">Delete</button>
-            </div> `;
+            </div>
+        </div>
+        <div class=TravelImg>
+        <img src="${travel.ImgUrl}" alt=""></div>`;
+           
         container.appendChild(TravelDiv);
     });
 }
@@ -225,7 +375,7 @@ async function editTravel(event){
         });
         if(response.ok){
             FetchTravel();
-            // closeTravel();
+            closeTravel();
         } else{
             console.error('Failed to update Journal:',response.statusText);
         }
@@ -244,8 +394,14 @@ async function deleteTravel(id) {
         console.error('Failed to delete journal:', response.statusText);
 }
 }
+
+document.querySelector('.close-btn').onclick = closeTravel;
 function closeTravel() {
     document.getElementById('EditTravel').style.display = 'none';
+}
+document.querySelector('.CloseBtnn').onclick = closeSubmit;
+function closeSubmit(){
+    document.getElementById('MainForm').style.display = 'none';
 }
 window.onload = FetchTravel;
 
@@ -253,4 +409,3 @@ window.onload = FetchTravel;
     </script>
 </body>
 </html>
-

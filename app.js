@@ -11,11 +11,6 @@ mongoose.connect(process.env.DB_URI,{
 });
 app.use(cors());
 app.use(express.static(path.join(__dirname,'public'))); 
-
-app.set("view engine");
-app.set("views",path.join(__dirname,"views"));
-  
-//Import and use the blog route
 const TravelRouter=require('./routes/routes');
 app.use('/api',TravelRouter);
 
