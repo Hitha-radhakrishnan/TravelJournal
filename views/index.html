@@ -303,7 +303,7 @@
             const ImgUrl=document.getElementById('Img').value;
        
 
-            const response=await fetch('http://localhost:8000/api/travel',{
+            const response=await fetch('https://traveljournal-xq5j.onrender.com/api/travel',{
             method: 'POST',
             headers:{
                     'Content-Type':'application/json'
@@ -324,7 +324,7 @@
         }
 
     async function FetchTravel(){
-    const response=await fetch('http://localhost:8000/api/travel');
+    const response=await fetch('https://traveljournal-xq5j.onrender.com/api/travel');
     const travels=await response.json();
     const container=document.getElementById('TravelItems');
     container.innerHTML='';
@@ -366,7 +366,7 @@ async function editTravel(event){
     const imgUrl=document.getElementById('edit-img').value;
 
     if(currentEditId){
-        const response= await fetch(`http://localhost:8000/api/travel/${currentEditId}`,{
+        const response= await fetch(`https://traveljournal-xq5j.onrender.com/api/travel/${currentEditId}`,{
             method:'PUT',
             headers:{
                 'Content-Type':'application/json'
@@ -383,7 +383,7 @@ async function editTravel(event){
 }
 
 async function deleteTravel(id) {
-      const response = await fetch(`http://localhost:8000/api/travel/${id}`, {
+      const response = await fetch(`https://traveljournal-xq5j.onrender.com/api/travel/${id}`, {
         method: 'DELETE'
       });
 
